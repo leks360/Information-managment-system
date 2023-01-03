@@ -11,6 +11,8 @@ import inspection from './routes/inspectionRoute.js';
 import userRoute from './routes/userRoute.js';
 import cors from 'cors';
 import cookieparser from 'cookie-parser';
+import path from 'path';
+const __dirname = path.resolve();
 dotenv.config();
 
 const app=express();
@@ -34,7 +36,17 @@ app.use('/api/do',doRoute);
 app.use('/api/penalty',penalty);
 app.use('/api/inspection',inspection);
 
+app.use(express.static(path.join(__dirname, "./Client/build")));
+app.get("*", function (_, res) {
+  res.sendFile(
+    path.join(__dirname, "./Client/build/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  );
+});
+const PORT=process.env.port||3000;
 
-app.listen(3000,()=>{
+app.listen(PORT,()=>{
     console.log("starting");
 });
